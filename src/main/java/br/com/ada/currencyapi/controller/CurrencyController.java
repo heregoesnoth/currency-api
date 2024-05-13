@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ada.currencyapi.domain.ConvertCurrencyRequest;
 import br.com.ada.currencyapi.domain.ConvertCurrencyResponse;
-import br.com.ada.currencyapi.domain.Currency;
 import br.com.ada.currencyapi.domain.CurrencyRequest;
 import br.com.ada.currencyapi.domain.CurrencyResponse;
 import br.com.ada.currencyapi.exception.CoinNotFoundException;
 import br.com.ada.currencyapi.exception.CurrencyException;
 import br.com.ada.currencyapi.service.CurrencyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,12 +42,13 @@ public class CurrencyController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> create(@RequestBody CurrencyRequest request) throws CurrencyException {
-        return new ResponseEntity<>(currencyService.create(request), HttpStatus.CREATED);
+    public ResponseEntity<Long> create(@RequestBody @Valid CurrencyRequest request) throws CurrencyException {
+        Long id = currencyService.create(request);
+        return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") String id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         currencyService.delete(id);
         return ResponseEntity.ok().build();
     }

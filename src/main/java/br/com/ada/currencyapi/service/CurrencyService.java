@@ -49,7 +49,7 @@ public class CurrencyService {
         return saved.getId();
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         currencyRepository.deleteById(id);
     }
 
@@ -62,13 +62,13 @@ public class CurrencyService {
     }
 
     private BigDecimal getAmount(ConvertCurrencyRequest request) throws CoinNotFoundException {
-        Currency from = currencyRepository.findByName(request.getFrom());
+        Currency currency = currencyRepository.findByName(request.getFrom());
 
-        if (Objects.isNull(from)) {
+        if (Objects.isNull(currency)) {
             throw new CoinNotFoundException(String.format("Coin not found: %s", request.getFrom()));
         }
 
-        BigDecimal exchange = from.getExchanges().get(request.getTo());
+        BigDecimal exchange = currency.getExchanges().get(request.getTo());
 
         if (Objects.isNull(exchange)) {
             throw new CoinNotFoundException(String.format("Exchange %s not found for %s", request.getTo(), request.getFrom()));
