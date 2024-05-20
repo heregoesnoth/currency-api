@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Currency</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Create Currency</h1>
+    <form th:action="@{/create}" th:object="${currencyRequest}" method="post">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" th:field="*{description}"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="exchanges" class="form-label">Exchanges</label>
+            <div th:each="exchange, iterStat : ${currencyRequest.exchanges}">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" th:field="*{exchanges[__${iterStat.index}__]}" placeholder="Currency Code">
+                    <input type="number" step="0.01" class="form-control" th:field="*{exchanges[__${iterStat.index}__]}" placeholder="Exchange Rate">
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary" th:onclick="addExchange()">Add Exchange</button>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script type="text/javascript">
+    function addExchange() {
+        var container = document.querySelector('[th\\:each="exchange, iterStat : ${currencyRequest.exchanges}"]');
+        var newIndex = container.children.length;
+        var newElement = document.createElement('div');
+        newElement.className = 'input-group mb-3';
+        newElement.innerHTML = '<input type="text" class="form-control" name="exchanges[' + newIndex + ']" placeholder="Currency Code">' +
+            '<input type="number" step="0.01" class="form-control" name="exchanges[' + newIndex + ']" placeholder="Exchange Rate">';
+        container.appendChild(newElement);
+    }
+</script>
+</body>
+</html>
